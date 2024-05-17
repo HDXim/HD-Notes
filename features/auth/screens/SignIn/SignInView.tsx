@@ -9,7 +9,7 @@ interface SignInViewProps {
 
 const SignInView: React.FC<SignInViewProps> = ({ onLogin }) => (
   <Box
-    flex={2}
+    flex={1}
     paddingHorizontal="$4"
     justifyContent="center"
     alignItems="center"
