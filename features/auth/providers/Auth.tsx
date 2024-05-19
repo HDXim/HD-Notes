@@ -1,7 +1,5 @@
-/* eslint-disable max-lines */
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRootNavigation, useRouter, useSegments } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useRootNavigationState, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useMemo } from "react";
 
 // import { formatError } from "@/utils/format";
 // import removeEmptyKeys from "@/utils/removeEmptyKeys";
@@ -32,35 +30,19 @@ export const useAuth = () => React.useContext(AuthContext);
 
 // This hook will protect the route access based on auth authentication.
 const useProtectedRoute = (auth: any | null | undefined) => {
-  const segments = useSegments();
   const router = useRouter();
   // checking that navigation is all good;
-  const [isNavigationReady, setNavigationReady] = useState(false);
-  const rootNavigation = useRootNavigation();
-
-  useEffect(() => {
-    const unsubscribe = rootNavigation?.addListener("state", (_) =>
-      setNavigationReady(true)
-    );
-    return () => {
-      unsubscribe?.();
-    };
-  }, [rootNavigation]);
+  const rootNavigation = useRootNavigationState();
 
   React.useEffect(() => {
-    if (!isNavigationReady) return;
-    const isPublicGroup = segments[0] === "(auth)";
-    const isUnmatched = segments[0] === "[...unmatched]";
-    const isFeedback = segments.includes("feedback");
+    if (!rootNavigation.key) return;
 
-    if (isUnmatched || isFeedback) {
-      // Do nothing
-    } else if (!auth && !isPublicGroup) {
+    if (!auth) {
       router.replace("/login");
-    } else if (auth?.AccessToken && isPublicGroup) {
-      router.replace("/");
+    } else if (auth?.AccessToken) {
+      router.replace("/home");
     }
-  }, [auth, segments, router, isNavigationReady]);
+  }, [auth, router, rootNavigation.key]);
 };
 
 export const AuthProvider = ({ children }: Props) => {
