@@ -16,9 +16,25 @@ export default function Layout() {
           }}
         />
         <Stack.Screen
-          name="/"
+          name="home"
           options={{
-            title: "Create Post",
+            title: "Home",
+            headerTitleAlign: "center",
+            headerShown: true,
+            headerBackVisible: true,
+            fullScreenGestureEnabled: true,
+            headerBackTitleVisible: false,
+            headerTintColor: config.tokens.colors.primary600,
+            headerTitleStyle: {
+              fontWeight: "600",
+              color: config.tokens.colors.primary700,
+            },
+          }}
+        />
+        <Stack.Screen
+          name="custom-group-note"
+          options={{
+            title: "Custom group note",
             headerTitleAlign: "center",
             headerShown: true,
             headerBackVisible: true,
