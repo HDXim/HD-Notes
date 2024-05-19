@@ -1,4 +1,3 @@
-import { Stack } from "expo-router";
 import { Box, GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@/configs/gluestack";
 import { Slot, usePathname } from "expo-router";
@@ -38,17 +37,14 @@ const AuthWrapper = ({ children }: ChildrenProps) => {
 
   return !isAppReady ? null : (
     <SafeAreaProvider>
-      {/* <NavThemeProvider> */}
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ActionSheetProvider>
           <Box flex={1} bgColor="$white">
-            {/* <StatusBar backgroundColor={config.tokens.colors.primary400} /> */}
-            <StatusBar />
+            <StatusBar backgroundColor={config.tokens.colors.primary400} />
             {children}
           </Box>
         </ActionSheetProvider>
       </GestureHandlerRootView>
-      {/* </NavThemeProvider> */}
     </SafeAreaProvider>
   );
 };
@@ -68,8 +64,5 @@ export default function RootLayout() {
     <CognitoWrapper>
       <Slot />
     </CognitoWrapper>
-    // <Stack>
-    //   <Stack.Screen name="index" options={{headerShown: false}}/>
-    // </Stack>
   );
 }
