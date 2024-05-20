@@ -18,6 +18,22 @@ import { Platform } from "react-native";
 import { ReactNode } from "react";
 
 import { AuthProvider } from "@/features/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+
+GoogleSignin.configure({
+  scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+  webClientId:
+    "295638920480-r33qg385rlnn6qv6ahtf76rv76aa6fqb.apps.googleusercontent.com",
+  offlineAccess: true,
+  hostedDomain: "",
+  forceCodeForRefreshToken: true,
+  accountName: "",
+  iosClientId:
+    "295638920480-p6chuih038cta6v8ireoesapigf7jvht.apps.googleusercontent.com",
+  googleServicePlistPath: "",
+  openIdRealm: "",
+  profileImageSize: 120,
+});
 
 interface ChildrenProps {
   children: ReactNode;

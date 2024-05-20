@@ -13,13 +13,24 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.xim.HDNotes",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.295638920480-p6chuih038cta6v8ireoesapigf7jvht"
+            ]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.xim.HDNotes"
     },
     "web": {
       "bundler": "metro",
@@ -27,7 +38,13 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "295638920480-p6chuih038cta6v8ireoesapigf7jvht.apps.googleusercontent.com"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

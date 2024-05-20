@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "295638920480",
+    "project_id": "hdnotes-7c916",
+    "storage_bucket": "hdnotes-7c916.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295638920480:android:ebef408f16122c200d3b45",
+        "android_client_info": {
+          "package_name": "com.datgs.HDNotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295638920480-vbj3c532fivmei1msb5qoq93gvos1747.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuTfqQWkFGNSXseYxlvpSB-KD4oaV6IE0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "295638920480-vbj3c532fivmei1msb5qoq93gvos1747.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

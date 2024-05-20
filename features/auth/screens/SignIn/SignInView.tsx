@@ -2,6 +2,7 @@ import { Box, Text } from "@gluestack-ui/themed";
 import React from "react";
 
 // import CustomButton from "@/components/Elements/CustomButton";
+import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
 interface SignInViewProps {
   onLogin: () => void;
@@ -44,9 +45,8 @@ const SignInView: React.FC<SignInViewProps> = ({ onLogin }) => (
         },
       }}
     >
-      They Choose, You Decide
+      <GoogleSigninButton onPress={onLogin} />
     </Text>
-    {/* <CustomButton buttonText="Login" onSubmit={onLogin} /> */}
   </Box>
 );
 
