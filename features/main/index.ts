@@ -1,4 +1,5 @@
-import Home from "./screens/Home";
+import GroupList from "./screens/GroupList";
 import CustomGroupNote from "./screens/CustomGroupNote";
+import Profile from "./screens/Profile";
 
-export { Home, CustomGroupNote };
+export { GroupList, CustomGroupNote, Profile };
