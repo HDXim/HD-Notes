@@ -7,11 +7,21 @@ interface SignInContainerProps {}
 
 const SignInContainer: React.FC<SignInContainerProps> = () => {
   const auth = useAuth();
+
   const handleOnLogin = async () => {
     auth?.sigInGoogle();
   };
 
-  return <SignInView onLogin={handleOnLogin} />;
+  const handleOnFBLoginFinished = async () => {
+    auth?.sigInFacebook();
+  };
+
+  return (
+    <SignInView
+      onLogin={handleOnLogin}
+      onFBLoginFinished={handleOnFBLoginFinished}
+    />
+  );
 };
 
 export default SignInContainer;

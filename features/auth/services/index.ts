@@ -2,6 +2,7 @@ import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import { AccessToken, LoginManager } from "react-native-fbsdk-next";
 
 export const loginWithGoogleAPI = async () => {
   try {
@@ -18,10 +19,18 @@ export const loginWithGoogleAPI = async () => {
   }
 };
 
-export const signOutGoogleAPI = async () => {
+export const logOutAPI = async () => {
   try {
-    await GoogleSignin.signOut();
+    const isGoogleSignedIn = await GoogleSignin.isSignedIn();
+    if (isGoogleSignedIn) {
+      await GoogleSignin.signOut();
+    }
+
+    const resAccessToken = await AccessToken.getCurrentAccessToken();
+    if (resAccessToken?.accessToken) {
+      LoginManager.logOut();
+    }
   } catch (error) {
-    console.log("signOutGoogleAPI error", error);
+    console.log("logOutAPI error", error);
   }
 };

@@ -1,11 +1,9 @@
 import { useRootNavigationState, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { authType } from "./types";
-import { loginWithGoogleAPI, signOutGoogleAPI } from "../services";
+import { loginWithGoogleAPI, logOutAPI } from "../services";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-// import { formatError } from "@/utils/format";
-// import removeEmptyKeys from "@/utils/removeEmptyKeys";
+import { AccessToken, LoginManager, Profile } from "react-native-fbsdk-next";
 
 interface Props {
   children: React.ReactNode;
@@ -40,7 +38,7 @@ const useProtectedRoute = (auth: authType | null) => {
     if (!rootNavigation.key) return;
 
     if (auth && !!auth.accessToken) {
-      router.replace("/home");
+      router.replace("/main-tabs");
     } else {
       router.replace("/login");
     }
@@ -53,15 +51,23 @@ export const AuthProvider = ({ children }: Props) => {
   const [auth, setAuth] = React.useState<authType | null>(null);
 
   const initializeAuthData = useCallback(async () => {
-    const authAppString = await AsyncStorage.getItem("@authApp");
-    const authApp: authType = JSON.parse(authAppString || "");
-    if (authApp) {
+    try {
+      const authAppString = await AsyncStorage.getItem("@authApp");
+      if (!authAppString) {
+        return;
+      }
+      const authApp: authType = JSON.parse(authAppString || "");
       setAuth(authApp);
+    } catch (error) {
+      console.log("error", error);
     }
   }, []);
 
   const handleSignInManual = useCallback(
-    async (accountName: string, password: string) => {},
+    async (accountName: string, password: string) => {
+      console.log("-------accountName------", accountName);
+      console.log("-------password------", password);
+    },
     []
   );
 
@@ -70,7 +76,7 @@ export const AuthProvider = ({ children }: Props) => {
     if (!resSigIn) {
       return;
     }
-    const authInfo = {
+    const authInfo: authType = {
       accessToken: resSigIn.idToken || resSigIn.serverAuthCode || "",
       userInfo: {
         userId: resSigIn.user.id || "",
@@ -83,10 +89,35 @@ export const AuthProvider = ({ children }: Props) => {
     AsyncStorage.setItem("@authApp", JSON.stringify(authInfo));
   }, []);
 
-  const handleSignInFacebook = useCallback(async () => {}, []);
+  const handleSignInFacebook = useCallback(async () => {
+    try {
+      const result = await LoginManager.logInWithPermissions([
+        "public_profile",
+      ]);
+      if (result.isCancelled) {
+        console.log("Login cancelled");
+      } else {
+        const currentProfile = await Profile.getCurrentProfile();
+        const currentAccessToken = await AccessToken.getCurrentAccessToken();
+        const authInfo: authType = {
+          accessToken: currentAccessToken?.accessToken || "",
+          userInfo: {
+            userId: currentProfile?.userID || "",
+            email: currentProfile?.email || "",
+            fullName: currentProfile?.name || "",
+            avatar: currentProfile?.imageURL || "",
+          },
+        };
+        setAuth(authInfo);
+        AsyncStorage.setItem("@authApp", JSON.stringify(authInfo));
+      }
+    } catch (error) {
+      console.log("handleSignInFacebook error", error);
+    }
+  }, []);
 
   const handleSignOut = useCallback(async () => {
-    await signOutGoogleAPI();
+    await logOutAPI();
     AsyncStorage.removeItem("@authApp");
     setAuth(null);
   }, [router]);
