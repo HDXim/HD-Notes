@@ -1,3 +1,4 @@
 import Loading from "./Loading";
+import KeyboardAvoidingForm from "./KeyboardAvoidingForm";
 
-export { Loading };
+export { Loading, KeyboardAvoidingForm };

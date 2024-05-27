@@ -66,7 +66,7 @@ const ModalView: React.FC<ModalProps> = ({
         <Button
           size="sm"
           action="positive"
-          backgroundColor="$primary500"
+          backgroundColor="$rose600"
           borderWidth="$0"
           onPress={onPressRight}
         >
