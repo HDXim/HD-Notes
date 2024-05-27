@@ -44,6 +44,19 @@
         {
           "iosUrlScheme": "295638920480-p6chuih038cta6v8ireoesapigf7jvht.apps.googleusercontent.com"
         }
+      ],
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "475825878226100",
+          "clientToken": "b8522b5e130d71ee221be0383d315284",
+          "displayName": "HDNotes Facebook",
+          "scheme": "fb475825878226100",
+          "advertiserIDCollectionEnabled": false,
+          "autoLogAppEventsEnabled": false,
+          "isAutoInitEnabled": true,
+          "iosUserTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
       ]
     ],
     "experiments": {
