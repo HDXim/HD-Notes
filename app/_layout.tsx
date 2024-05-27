@@ -13,13 +13,9 @@ import { useFonts } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
-import { StatusBar } from "expo-status-bar";
-import { Platform } from "react-native";
+import { Platform, StatusBar } from "react-native";
 import { ReactNode } from "react";
-
-import { AuthProvider } from "@/features/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-
 GoogleSignin.configure({
   scopes: ["https://www.googleapis.com/auth/drive.readonly"],
   webClientId:
@@ -34,12 +30,20 @@ GoogleSignin.configure({
   openIdRealm: "",
   profileImageSize: 120,
 });
+import { Settings } from "react-native-fbsdk-next";
+Settings.setAppID("475825878226100");
+Settings.initializeSDK();
+
+import { AuthProvider } from "@/features/auth";
+import { isAndroid } from "helpers/deviceInfo";
 
 interface ChildrenProps {
   children: ReactNode;
 }
 const AuthWrapper = ({ children }: ChildrenProps) => {
   const pathname = usePathname();
+  // console.log("pathname===", pathname);
+
   const [fontsLoaded] = useFonts({
     ...MaterialCommunityIcons.font,
     ...FontAwesome.font,
@@ -52,11 +56,14 @@ const AuthWrapper = ({ children }: ChildrenProps) => {
   const isAppReady = Platform.OS === "web" || fontsLoaded;
 
   return !isAppReady ? null : (
-    <SafeAreaProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
+    <SafeAreaProvider style={{ flex: 1 }}>
+      <GestureHandlerRootView>
         <ActionSheetProvider>
-          <Box flex={1} bgColor="$white">
-            <StatusBar backgroundColor={config.tokens.colors.primary400} />
+          <Box
+            flex={1}
+            marginTop={isAndroid ? StatusBar.currentHeight || 0 : 0}
+          >
+            <StatusBar backgroundColor={config.tokens.colors.pink500} />
             {children}
           </Box>
         </ActionSheetProvider>
