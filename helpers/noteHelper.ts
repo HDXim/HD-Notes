@@ -1,5 +1,6 @@
 import { deleteDoc, where } from "firebase/firestore";
 import ClassFirestore from "./firebaseFirestore";
+import GroupHelper from "./groupHelper";
 
 export interface Note {
   noteId: string;
@@ -24,7 +25,12 @@ export default class NoteHelper {
   //OK
   static createNote = async (data: payloadCreateNote) => {
     try {
-      return await ClassFirestore.createDocument(this.collection, data);
+      const resCreate = await ClassFirestore.createDocument(
+        this.collection,
+        data
+      );
+      GroupHelper.updateNoteAmount(data.groupId);
+      return resCreate.id;
     } catch (e) {
       return Promise.reject(e);
     }
@@ -43,11 +49,12 @@ export default class NoteHelper {
   };
 
   //OK
-  static deleteNote = async (noteId: string) => {
+  static deleteNote = async (noteId: string, groupId: string) => {
     try {
       const resDelete = await ClassFirestore.deleteDocument(
         `${this.collection}/${noteId}`
       );
+      GroupHelper.updateNoteAmount(groupId);
       return resDelete;
     } catch (e) {
       return Promise.reject(e);
@@ -83,7 +90,7 @@ export default class NoteHelper {
           noteId: note.id,
           noteTitle: note.data()?.noteTitle || "",
           noteContent: note.data()?.noteContent || "",
-          groupId: note.id,
+          groupId: groupId,
         });
       });
       return noteList;

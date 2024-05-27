@@ -11,6 +11,11 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  getCountFromServer,
+  orderBy,
+  limit,
+  startAfter,
+  serverTimestamp,
 } from "firebase/firestore";
 import { db } from "@/configs/firebaseConfig";
 
@@ -18,7 +23,10 @@ export default class ClassFirestore {
   static createDocument = async (collection: string, data: any) => {
     try {
       const collectionRef = collections(db, collection);
-      return await addDoc(collectionRef, data);
+      return await addDoc(collectionRef, {
+        ...data,
+        timeCreate: serverTimestamp(),
+      });
     } catch (e) {
       return Promise.reject(e);
     }
@@ -53,9 +61,34 @@ export default class ClassFirestore {
     }
   };
 
-  static getDocumentList = async (collection: string) => {
+  static getDocumentList = async ({
+    collection,
+    startAfterPath,
+    lim,
+  }: {
+    collection: string;
+    startAfterPath?: string; // groups/id
+    lim: number;
+  }) => {
     try {
-      return await getDocs(collections(db, collection));
+      const refColl = collections(db, collection);
+      let queryRef;
+      if (!!startAfterPath) {
+        const docSnap = await this.getDocument(startAfterPath);
+        queryRef = query(
+          refColl,
+          startAfter(docSnap),
+          orderBy("timeCreate", "desc"),
+          limit(lim)
+        );
+      } else {
+        queryRef = query(refColl, orderBy("timeCreate", "desc"), limit(lim));
+      }
+      if (queryRef) {
+        return await getDocs(queryRef);
+      } else {
+        return Promise.reject("get List thất bại");
+      }
     } catch (e) {
       return Promise.reject(e);
     }
@@ -68,6 +101,19 @@ export default class ClassFirestore {
     try {
       const queryRef = query(collections(db, collection), qr);
       return await getDocs(queryRef);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  static countByQuery = async (
+    collection: string,
+    qr: QueryFieldFilterConstraint
+  ) => {
+    try {
+      const queryRef = query(collections(db, collection), qr);
+      const snapshot = await getCountFromServer(queryRef);
+      return snapshot.data().count;
     } catch (e) {
       return Promise.reject(e);
     }

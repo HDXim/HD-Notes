@@ -1,9 +1,11 @@
+import { where } from "firebase/firestore";
 import ClassFirestore from "./firebaseFirestore";
 import NoteHelper, { Note } from "./noteHelper";
 
 export interface Group {
   groupId: string;
   groupTitle: string;
+  noteAmount: number;
 }
 export interface GroupDetail {
   groupId: string;
@@ -11,7 +13,8 @@ export interface GroupDetail {
   notes: Note[];
 }
 type payloadAlterGroup = {
-  groupTitle: string;
+  groupTitle?: string;
+  noteAmount?: number;
 };
 
 export default class GroupHelper {
@@ -71,17 +74,42 @@ export default class GroupHelper {
   };
 
   //OK
-  static getGroupList = async () => {
+  static getGroupList = async ({
+    startAfterId,
+    limit,
+  }: {
+    startAfterId: string;
+    limit: number;
+  }) => {
     try {
       const groupList: Group[] = [];
-      const resGroup = await ClassFirestore.getDocumentList(this.collection);
+      const resGroup = await ClassFirestore.getDocumentList({
+        collection: this.collection,
+        startAfterPath: !!startAfterId
+          ? `${this.collection}/${startAfterId}`
+          : "",
+        lim: limit,
+      });
       resGroup.forEach((group) => {
         groupList.push({
           groupId: group.id,
-          groupTitle: group.data()?.title || "",
+          groupTitle: group.data()?.groupTitle || "",
+          noteAmount: group.data()?.noteAmount || 0,
         });
       });
       return groupList;
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  static updateNoteAmount = async (groupId: string) => {
+    try {
+      const noteAmount = await ClassFirestore.countByQuery(
+        NoteHelper.collection,
+        where("groupId", "==", groupId)
+      );
+      this.updateGroup(groupId, { noteAmount });
     } catch (e) {
       return Promise.reject(e);
     }
